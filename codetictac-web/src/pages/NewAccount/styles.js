@@ -9,7 +9,7 @@ export const Container = styled.div`
 `;
 
 export const Form = styled.form`
-  width: 400px;
+  width: 500px;
   display: flex;
   flex-direction: column;
   padding: 10px;
@@ -31,10 +31,10 @@ export const Label = styled.label`
 `;
 
 export const Input = styled.input`
-  height: 48px;
+  height: 35px;
   border: 1px solid #ddd;
   border-radius: 4px;
-  font-size: 16px;
+  font-size: 14px;
   padding: 0 20px;
   margin-top: 20px;
 `;

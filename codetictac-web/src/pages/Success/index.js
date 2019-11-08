@@ -13,7 +13,7 @@ export default function Success() {
     const { code } = values;
     async function makePost() {
       const response = await api.post("/users", { code });
-      history.push("new-account", { token: response.data.token });
+      history.push("new-account", { ...response.data });
     }
     makePost();
   });

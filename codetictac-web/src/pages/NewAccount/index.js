@@ -1,39 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
-import {
-  Container,
-  Form,
-  Title,
-  Label,
-  Input,
-  Button,
-  Link,
-  Footer
-} from "./styles";
-
-import wakatimeApi from "../../services/wakatime.api";
+import { Container, Form, Title, Label, Input, Button } from "./styles";
 
 export default function NewAccount() {
   let { state } = useLocation();
   const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
+  const [token, setToken] = useState("");
+  const [organization, setOrganization] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmationPassword, setConfirmationPassword] = useState("");
   useEffect(() => {
-    const { token } = state;
-    console.log(token);
-    async function handleGet() {
-      try {
-        const response = await wakatimeApi.get("users/current", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: "*/*"
-          }
-        });
-        setEmail(response.data.email);
-      } catch (err) {
-        console.log(err);
-      }
-    }
-    handleGet();
+    const { token, name, email } = state;
+    setEmail(email);
+    setName(name);
+    setToken(token);
   }, []);
 
   return (
@@ -41,7 +23,11 @@ export default function NewAccount() {
       <Title>Nova Conta</Title>
       <Form>
         <Label>Nome*</Label>
-        <Input type="text" />
+        <Input
+          type="text"
+          value={name}
+          onChange={e => setName(e.target.value)}
+        />
         <Label>E-mail*</Label>
         <Input
           type="email"
@@ -49,19 +35,24 @@ export default function NewAccount() {
           onChange={e => setEmail(e.target.value)}
         />
         <Label>Organização</Label>
-        <Input type="text" />
+        <Input
+          type="text"
+          value={organization}
+          onChange={e => setOrganization(e.target.value)}
+        />
         <Label>Senha*</Label>
-        <Input type="password" />
+        <Input
+          type="password"
+          value={password}
+          onChange={e => setPassword(e.target.value)}
+        />
         <Label>Confirmação de senha*</Label>
-        <Input type="password" />
-        <Button>Entrar</Button>
-        <Footer>
-          <Link
-            href={`${process.env.REACT_APP_WAKATIME_URL}/authorize?client_id=${process.env.REACT_APP_WAKATIME_CLIENT_ID}&client_secret=${process.env.REACT_APP_WAKATIME_APP_SECRET}&redirect_uri=${process.env.REACT_APP_WAKATIME_REDIRECT_URL}&response_type=code&scope=email,read_stats`}
-          >
-            Ainda não tem uma conta? Crie uma já!
-          </Link>
-        </Footer>
+        <Input
+          type="password"
+          value={confirmationPassword}
+          onChange={e => setConfirmationPassword(e.target.value)}
+        />
+        <Button>Finalizar</Button>
       </Form>
     </Container>
   );

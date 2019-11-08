@@ -1,5 +1,6 @@
 import { stringify, parse } from "query-string";
 import api from "../services/api";
+import wakatimeApi from "../services/wakatime.api";
 
 class UserController {
     async store(req, res) {
@@ -14,14 +15,24 @@ class UserController {
         };
 
         try {
-            const response = await api.post("/token", stringify(body), {
+            const tokenRes = await api.post("/token", stringify(body), {
                 headers: {
                     Accept: "application/x-www-form-urlencoded"
                 }
             });
-            const { access_token: token } = parse(response.data);
-            console.log(token);
-            return res.send({ token });
+            const { access_token: token } = parse(tokenRes.data);
+
+            const emailRes = await wakatimeApi.get("users/current", {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            const { data } = emailRes.data;
+            return res.send({
+                token,
+                name: data.display_name,
+                email: data.email
+            });
         } catch (err) {
             console.log(err.response.data);
             return res.status(400).send({ error: err.response.data });
