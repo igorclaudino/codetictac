@@ -42,7 +42,8 @@ class AuthController {
         } catch (err) {
             return res
                 .status(400)
-                .json({ error: `Registration failed: ${err}` });
+                .json({ error: `Registration failed: ${err}` }); 
+                
         }
     }
 

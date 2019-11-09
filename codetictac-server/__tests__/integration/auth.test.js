@@ -1,5 +1,6 @@
 import request from "supertest";
 import faker from "faker";
+import mongoose from "mongoose";
 import app from "../../src/app";
 import factory from "../factories";
 import User from "../../src/app/models/User";
@@ -7,6 +8,9 @@ import User from "../../src/app/models/User";
 describe("Authentication", () => {
     beforeEach(async () => {
         await User.deleteMany({});
+    });
+    afterAll(async () => {
+        await mongoose.connection.close();
     });
     it("should register a user with valid fields", async () => {
         const response = await request(app)
