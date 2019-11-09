@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
 import { Container, Form, Title, Label, Input, Button } from "./styles";
+import { toast } from "react-toastify";
+
+import api from "../../services/api";
 
 export default function NewAccount() {
   let { state } = useLocation();
@@ -17,6 +20,29 @@ export default function NewAccount() {
     setName(name);
     setToken(token);
   }, []);
+
+  async function handleFinish(event) {
+    event.preventDefault();
+    if (!name || !email || !password || !confirmationPassword) {
+      toast.error("Os campos com * devem ser preenchidos!");
+    }
+    if (password !== confirmationPassword) {
+      toast.error("As senhas não correspondem!");
+    }
+
+    try {
+      const response = await api.post("/register", {
+        name,
+        email,
+        password,
+        organization,
+        wakatime_token: token
+      });
+      toast.success(`Usuário salvo com sucesso: ${response.data.user._id}`);
+    } catch (err) {
+      toast.error(`Ocorreu um erro ao cadastrar: ${err.response.data.error}`);
+    }
+  }
 
   return (
     <Container>
@@ -52,7 +78,7 @@ export default function NewAccount() {
           value={confirmationPassword}
           onChange={e => setConfirmationPassword(e.target.value)}
         />
-        <Button>Finalizar</Button>
+        <Button onClick={handleFinish}>Finalizar</Button>
       </Form>
     </Container>
   );

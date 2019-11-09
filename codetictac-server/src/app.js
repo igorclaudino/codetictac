@@ -1,8 +1,13 @@
-import "dotenv/config";
+import { config } from "dotenv";
+
 import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
 
+config({
+    path: process.env.NODE_ENV === "test" ? ".env.test" : ".env"
+});
+// eslint-disable-next-line import/first
 import routes from "./routes";
 
 class AppController {

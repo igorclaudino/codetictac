@@ -1,27 +1,29 @@
 import { stringify, parse } from "query-string";
-import api from "../services/api";
+import tokenApi from "../services/token.api";
 import wakatimeApi from "../services/wakatime.api";
 
-class UserController {
+class WakatimeController {
     async store(req, res) {
         const { code } = req.body;
 
         const body = {
             redirect_uri: process.env.WAKATIME_REDIRECT_URL,
             grant_type: "authorization_code",
-            code,
             client_id: process.env.WAKATIME_CLIENT_ID,
-            client_secret: process.env.WAKATIME_APP_SECRET
+            client_secret: process.env.WAKATIME_APP_SECRET,
+            code
         };
-
         try {
-            const tokenRes = await api.post("/token", stringify(body), {
+            // Getting token from wakatime
+
+            const tokenRes = await tokenApi.post("token", stringify(body), {
                 headers: {
                     Accept: "application/x-www-form-urlencoded"
                 }
             });
             const { access_token: token } = parse(tokenRes.data);
 
+            // Getting user data from wakatime
             const emailRes = await wakatimeApi.get("users/current", {
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -34,10 +36,9 @@ class UserController {
                 email: data.email
             });
         } catch (err) {
-            console.log(err.response.data);
-            return res.status(400).send({ error: err.response.data });
+            return res.status(400).send({ error: err });
         }
     }
 }
 
-export default new UserController();
+export default new WakatimeController();
